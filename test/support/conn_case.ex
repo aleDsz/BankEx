@@ -23,6 +23,7 @@ defmodule BankExWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import BankExWeb.ConnCase
+      import BankEx.Factory
 
       alias BankExWeb.Router.Helpers, as: Routes
 
