@@ -20,3 +20,7 @@ config :bank_ex, BankExWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# TDD
+config :mix_test_watch,
+  clear: true
