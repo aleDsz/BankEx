@@ -39,6 +39,9 @@ defmodule BankEx.MixProject do
       # Serializers
       {:jason, "~> 1.0"},
 
+      # Validators
+      {:brcpfcnpj, "~> 0.2.0"},
+
       # Documentation
       {:phoenix_swagger, github: "xerions/phoenix_swagger", branch: "master"},
 
