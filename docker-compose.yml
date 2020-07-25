@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+      PGUSER: bankex
+      PGPASSWORD: bankex
+      PGDATABASE: bankex
+      PGPORT: 5432
+      PGHOST: database
+      DATABASE_URL: postgres://bankex:bankex@database:5432/bankex
+      MIX_ENV: dev
+    ports:
+      - "4000:4000"
+    depends_on:
+      - database
+
+  database:
+    image: postgres:9.6.13-alpine
+    environment:
+      POSTGRES_USER: bankex
+      POSTGRES_PASSWORD: bankex
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
