@@ -3,9 +3,12 @@ defmodule BankExWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug BankExWeb.Plugs.Crypto
   end
 
-  scope "/api", BankExWeb do
+  scope "/", BankExWeb do
     pipe_through :api
+
+    post "/users", UsersController, :create
   end
 end
