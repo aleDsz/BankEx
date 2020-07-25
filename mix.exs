@@ -45,6 +45,7 @@ defmodule BankEx.MixProject do
       # Testing
       {:ex_machina, "~> 2.4", only: [:dev, :test]},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.14", only: :test}
     ]
   end
 
