@@ -2,7 +2,7 @@ defmodule BankExWeb.UsersControllerTest do
   use BankExWeb.ConnCase, async: false
   @moduletag :users
 
-  alias BankEx.Services.Users
+  alias BankEx.Services.{Crypto, Users}
 
   describe "Received new user request from API so" do
     test "with invalid CPF, shouldn't create a new user and produce status 422 with error message [POST /users]", %{conn: conn} do
@@ -211,19 +211,20 @@ defmodule BankExWeb.UsersControllerTest do
         |> json_response(201)
       
       %{"referral_code" => referral_code} = response
-      {:ok, %{id: user_id}} = Users.get_by_referral_code(referral_code)
+      {:ok, %{id: user_id, name: user_name}} = Users.get_by_referral_code(referral_code)
 
       response =
         conn
         |> get(Routes.users_path(conn, :indications, user_referral_code))
         |> json_response(200)
 
-      [%{"id" => response_user_id}] = response
+      [%{"id" => response_user_id, "name" => name}] = response
 
       assert(
         not is_nil(response)
         and length(response) === 1
         and response_user_id === user_id
+        and Crypto.encrypt(name) === user_name
       )
     end
   end
