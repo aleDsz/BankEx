@@ -5,6 +5,10 @@ defmodule BankExWeb.ErrorView do
     Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
   end
 
+  def render("400.json", %{message: message}) do
+    %{errors: %{detail: message}}
+  end
+
   def render("error.json", %{changeset: changeset}) do
     %{errors: %{detail: translate_errors(changeset)}}
   end
