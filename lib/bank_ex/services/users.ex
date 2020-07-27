@@ -21,6 +21,20 @@ defmodule BankEx.Services.Users do
   end
 
   @doc """
+  Retrieve user by email
+  """
+  @spec get_by_email(email :: binary()) :: {:ok, User.t()} | {:error, term()}
+  def get_by_email(email) do
+    case Users.get_by_email(email) do
+      {:ok, user} ->
+        {:ok, user}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  @doc """
   Retrieve user by CPF
   """
   @spec get_by_cpf(cpf :: binary()) :: {:ok, User.t()} | {:error, term()}
