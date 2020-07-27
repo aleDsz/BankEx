@@ -7,7 +7,7 @@ defmodule BankEx.Services.UserIndications do
   alias BankEx.Contexts.UserIndications
 
   @doc """
-  Retrieve user indications from referral code 
+  Retrieve user indications from referral code
   """
   @spec retrieve_all_from_user_referral_code(referral_code :: binary()) :: {:ok, list(UserIndication.t())} | {:error, term()}
   def retrieve_all_from_user_referral_code(referral_code) do
