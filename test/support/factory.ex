@@ -7,6 +7,7 @@ defmodule BankEx.Factory do
     %{
       name: Faker.Person.name(),
       email: Faker.Internet.email(),
+      password: Ecto.UUID.generate(),
       cpf: Brcpfcnpj.cpf_generate(),
       birth_date: Faker.Date.date_of_birth(),
       gender: Enum.random(@genders),
