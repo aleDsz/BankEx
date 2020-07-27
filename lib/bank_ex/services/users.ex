@@ -56,7 +56,7 @@ defmodule BankEx.Services.Users do
     case Users.get_by_cpf(cpf) do
       {:ok, _user} -> Users.update(params)
       {:error, _reason} -> Users.create(params)
-    end    
+    end
   end
   def create(params),
     do: Users.create(params)
