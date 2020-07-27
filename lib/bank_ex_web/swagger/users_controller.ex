@@ -26,6 +26,7 @@ defmodule BankExWeb.Swagger.UsersController do
             properties do
               name :string, "User's full name"
               email :string, "User's email"
+              password :string, "User's password"
               cpf :string, "User's CPF number", required: true
               birth_date :string, "User's birth date"
               gender :string, "Users' gender", enum: ~w(M F O)
@@ -78,6 +79,7 @@ defmodule BankExWeb.Swagger.UsersController do
           referral_code :path, :string, "User's referral code", required: true, example: "12345678"
         end
 
+        security [%{Bearer: []}]
         response 200, "Ok", PhoenixSwagger.Schema.array(:User)
       end
     end
