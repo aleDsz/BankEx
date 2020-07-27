@@ -28,6 +28,10 @@ defmodule BankEx.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:plug_cowboy, "~> 2.0"},
 
+      # Authentications
+      {:guardian, "~> 2.0"},
+      {:guardian_phoenix, "~> 2.0"},
+
       # Database
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
