@@ -7,7 +7,7 @@ defmodule BankEx.Contexts.Users do
   alias BankEx.Repo
   alias BankEx.Schemas.User
 
-  @preload [:referral_user]
+  @preload [:referred_user]
 
   @doc """
 
