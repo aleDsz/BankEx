@@ -48,6 +48,27 @@ defmodule BankEx.Contexts.Users do
         {:ok, user}
     end
   end
+
+  @doc """
+  Retrieve an user by CPF
+  """
+  @spec get_by_cpf(cpf :: binary()) :: {:ok, User.t()} | {:error, term()}
+  def get_by_cpf(cpf) do
+    from(
+      m in User,
+      where: m.cpf == ^cpf,
+      preload: ^@preload
+    )
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        {:ok, user}
+    end
+  end
+
   @doc """
   Create new user
   """
