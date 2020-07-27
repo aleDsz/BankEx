@@ -140,7 +140,7 @@ defmodule BankExWeb.UsersControllerTest do
         conn
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
-      
+
       %{"referral_code" => referral_code} = response
       {:ok, %{status: status, referred_user: %{id: referred_user_id}}} =
         Users.get_by_referral_code(referral_code)
@@ -154,15 +154,44 @@ defmodule BankExWeb.UsersControllerTest do
   end
 
   describe "Received user indications request from API so" do
-    test "with invalid referral code, shouldn't retrieve all user's indications and produce status 404 with error message [GET /users/:referral_code/indications]", %{conn: conn} do
+    test "with invalid token, shouldn't retrieve all user's indications and produce status 401 with error message [GET /users/:referral_code/indications]", %{conn: conn} do
       response =
         conn
+        |> get(Routes.users_path(conn, :indications, "123456"))
+        |> json_response(401)
+
+      assert(
+        not is_nil(response)
+        and response["errors"]["detail"] === "Unauthorized"
+      )
+    end
+
+    test "with invalid referral code, shouldn't retrieve all user's indications and produce status 404 with error message [GET /users/:referral_code/indications]", %{conn: conn} do
+      params = build(:user)
+
+      conn
+      |> post(Routes.users_path(conn, :create), params)
+      |> json_response(201)
+
+      params = %{
+        "email" => params.email,
+        "password" => params.password
+      }
+
+      %{"token" => token} =
+        conn
+        |> post(Routes.auth_path(conn, :login), params)
+        |> json_response(201)
+
+      response =
+        conn
+        |> put_req_header("authorization", "bearer #{token}")
         |> get(Routes.users_path(conn, :indications, "123456"))
         |> json_response(404)
 
       assert(
         not is_nil(response)
-        and response["errors"]["detail"] === "Not Found" 
+        and response["errors"]["detail"] === "Not Found"
       )
     end
 
@@ -176,16 +205,27 @@ defmodule BankExWeb.UsersControllerTest do
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
 
+      params = %{
+        "email" => params.email,
+        "password" => params.password
+      }
+
+      %{"token" => token} =
+        conn
+        |> post(Routes.auth_path(conn, :login), params)
+        |> json_response(201)
+
       params =
         build(:user)
         |> Map.put(:referral_code, user_referral_code)
 
-     conn
-     |> post(Routes.users_path(conn, :create), params)
-     |> json_response(201)
-      
+      conn
+      |> post(Routes.users_path(conn, :create), params)
+      |> json_response(201)
+
       response =
         conn
+        |> put_req_header("authorization", "bearer #{token}")
         |> get(Routes.users_path(conn, :indications, user_referral_code))
         |> json_response(400)
 
@@ -196,9 +236,21 @@ defmodule BankExWeb.UsersControllerTest do
     end
 
     test "with valid referral code, should retrieve all user's indications and produce status 200 without error [GET /users/:referral_code/indications]", %{conn: conn} do
+      params = build(:user)
+
       %{"referral_code" => user_referral_code} =
         conn
-        |> post(Routes.users_path(conn, :create), build(:user))
+        |> post(Routes.users_path(conn, :create), params)
+        |> json_response(201)
+
+      params = %{
+        "email" => params.email,
+        "password" => params.password
+      }
+
+      %{"token" => token} =
+        conn
+        |> post(Routes.auth_path(conn, :login), params)
         |> json_response(201)
 
       params =
@@ -209,12 +261,13 @@ defmodule BankExWeb.UsersControllerTest do
         conn
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
-      
+
       %{"referral_code" => referral_code} = response
       {:ok, %{id: user_id, name: user_name}} = Users.get_by_referral_code(referral_code)
 
       response =
         conn
+        |> put_req_header("authorization", "bearer #{token}")
         |> get(Routes.users_path(conn, :indications, user_referral_code))
         |> json_response(200)
 
