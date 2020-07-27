@@ -4,6 +4,8 @@ defmodule BankExWeb.UsersView do
   """
   use BankExWeb, :view
 
+  alias BankEx.Services.Crypto
+
   @doc """
   Render the user response 
   """
@@ -13,5 +15,10 @@ defmodule BankExWeb.UsersView do
   def render("users.json", %{users: users}) do
     users
     |> Enum.map(&Map.take(&1, ~w(id name)a))
+    |> Enum.map(fn %{name: name} = user ->
+      name = Crypto.decrypt(name)
+
+      %{id: user.id, name: name}
+    end)
   end
 end
