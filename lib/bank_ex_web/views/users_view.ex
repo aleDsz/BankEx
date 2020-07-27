@@ -7,7 +7,7 @@ defmodule BankExWeb.UsersView do
   @doc """
   
   """
-  def render("user.json", %{user: user}) do
-    user
+  def render("user.json", %{user: %{referral_code: referral_code}}) do
+    %{message: "User created successfully", referral_code: referral_code}
   end
 end
