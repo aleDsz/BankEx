@@ -63,10 +63,12 @@ defmodule BankExWeb.UsersControllerTest do
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
 
+      %{"referral_code" => referral_code} = response
+      {:ok, %{status: status}} = Users.get_by_referral_code(referral_code)
+
       assert(
         not is_nil(response)
-        and Ecto.UUID.cast(response["id"]) != :error
-        and response["status"] === "pending"
+        and status === "pending"
       )
     end
 
@@ -80,6 +82,9 @@ defmodule BankExWeb.UsersControllerTest do
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
 
+      %{"referral_code" => referral_code} = old_response
+      {:ok, old_user} = Users.get_by_referral_code(referral_code)
+
       new_params =
         params
         |> Map.put(:city, "São Paulo")
@@ -89,14 +94,16 @@ defmodule BankExWeb.UsersControllerTest do
         |> post(Routes.users_path(conn, :create), new_params)
         |> json_response(201)
 
+      %{"referral_code" => referral_code} = new_response
+      {:ok, new_user} = Users.get_by_referral_code(referral_code)
+
       assert(
         not is_nil(old_response)
-        and Ecto.UUID.cast(old_response["id"]) != :error
-        and old_response["id"] === new_response["id"]
-        and old_response["status"] === "pending"
-        and new_response["status"] === "completed"
-        and is_nil(old_response["city"])
-        and new_response["city"] === "São Paulo"
+        and old_user.id === new_user.id
+        and old_user.status === "pending"
+        and new_user.status === "completed"
+        and is_nil(old_user.city)
+        and new_user.city === "São Paulo"
       )
     end
 
@@ -108,20 +115,22 @@ defmodule BankExWeb.UsersControllerTest do
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
 
+      %{"referral_code" => referral_code} = response
+      {:ok, %{status: status}} = Users.get_by_referral_code(referral_code)
+
       assert(
         not is_nil(response)
-        and Ecto.UUID.cast(response["id"]) != :error
-        and response["status"] === "completed"
+        and status === "completed"
       )
     end
 
     test "with valid parameters and referral code, should create a new user and produce status 201 without error [POST /users]", %{conn: conn} do
-      %{"id" => user_id} =
+      %{"referral_code" => referral_code} =
         conn
         |> post(Routes.users_path(conn, :create), build(:user))
         |> json_response(201)
 
-      {:ok, %{referral_code: referral_code}} = Users.get(user_id)
+      {:ok, %{id: user_id}} = Users.get_by_referral_code(referral_code)
 
       params =
         build(:user)
@@ -131,14 +140,14 @@ defmodule BankExWeb.UsersControllerTest do
         conn
         |> post(Routes.users_path(conn, :create), params)
         |> json_response(201)
-
-      {:ok, %{referred_user: %{id: referred_user_id}}} =
-        Users.get(response["id"])
+      
+      %{"referral_code" => referral_code} = response
+      {:ok, %{status: status, referred_user: %{id: referred_user_id}}} =
+        Users.get_by_referral_code(referral_code)
 
       assert(
         not is_nil(response)
-        and Ecto.UUID.cast(response["id"]) != :error
-        and response["status"] === "completed"
+        and status === "completed"
         and referred_user_id === user_id
       )
     end
