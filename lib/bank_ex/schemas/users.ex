@@ -75,6 +75,7 @@ defmodule BankEx.Schemas.User do
     |> validate_required([:cpf])
     |> validate_inclusion(:gender, @genders)
     |> validate_cpf()
+    |> generate_password_hash()
     |> define_status()
     |> validate_inclusion(:status, @statuses)
     |> unique_constraint(:cpf, name: :users_unique_index)
@@ -100,6 +101,21 @@ defmodule BankEx.Schemas.User do
     end
   end
 
+  defp generate_password_hash(%Ecto.Changeset{changes: %{}} = changeset) do
+    case get_change(changeset, :password) do
+      nil ->
+        changeset
+
+      password ->
+        password =
+          password
+          |> BankEx.Services.Crypto.encrypt()
+
+        changeset
+        |> put_change(:password, password)
+    end
+  end
+
   defp define_status(%Ecto.Changeset{valid?: false} = changeset),
     do: changeset
   defp define_status(%Ecto.Changeset{valid?: true, data: %__MODULE__{id: nil}, changes: changes} = changeset) do
@@ -107,6 +123,7 @@ defmodule BankEx.Schemas.User do
       @fields
       |> List.delete(:id)
       |> List.delete(:status)
+      |> Kernel.++([:password])
 
     map_keys =
       changes
