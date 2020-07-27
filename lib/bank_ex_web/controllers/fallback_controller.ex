@@ -20,6 +20,18 @@ defmodule BankExWeb.FallbackController do
     |> put_view(BankExWeb.ErrorView)
     |> render("404.json")
   end
+  def call(%Plug.Conn{} = conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> put_view(BankExWeb.ErrorView)
+    |> render("401.json")
+  end
+  def call(%Plug.Conn{} = conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(BankExWeb.ErrorView)
+    |> render("400.json")
+  end
   def call(%Plug.Conn{} = conn, {:error, message}) when is_binary(message) do
     conn
     |> put_status(:bad_request)
