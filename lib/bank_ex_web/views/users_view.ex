@@ -12,5 +12,6 @@ defmodule BankExWeb.UsersView do
   end
   def render("users.json", %{users: users}) do
     users
+    |> Enum.map(&Map.take(&1, ~w(id name)a))
   end
 end
