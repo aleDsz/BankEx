@@ -86,5 +86,24 @@ defmodule BankEx.Contexts.Users do
         {:error, reason}
     end
   end
+
+  @doc """
+  Update existent user
+  """
+  @spec update(map()) :: {:ok, User.t()} | {:error, term()}
+  def update(%{"cpf" => cpf} = attrs) when is_map(attrs) do
+    with {:ok, user} <- get_by_cpf(cpf) do
+      user 
+      |> User.changeset(attrs)
+      |> Repo.update()
+      |> case do
+        {:ok, user} ->
+          user = Repo.preload(user, @preload)
+          {:ok, user}
+
+        {:error, reason} ->
+          {:error, reason}
+      end
+    end
   end
 end
