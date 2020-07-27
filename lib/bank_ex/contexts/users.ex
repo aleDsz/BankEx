@@ -77,5 +77,14 @@ defmodule BankEx.Contexts.Users do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, user} ->
+        user = Repo.preload(user, @preload)
+        {:ok, user}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
   end
 end
