@@ -8,12 +8,19 @@ defmodule BankExWeb.Router do
 
   pipeline :private do
     plug :accepts, ["json"]
+    plug BankExWeb.Plugs.Authentications
   end
 
   scope "/users", BankExWeb do
     pipe_through :public
 
     post "/", UsersController, :create
+  end
+
+  scope "/login", BankExWeb do
+    pipe_through :public
+
+    post "/", AuthController, :login
   end
 
   scope "/users", BankExWeb do
