@@ -1,16 +1,25 @@
 defmodule BankExWeb.Router do
   use BankExWeb, :router
 
-  pipeline :api do
+  pipeline :public do
     plug :accepts, ["json"]
     plug BankExWeb.Plugs.Crypto
   end
 
-  scope "/", BankExWeb do
-    pipe_through :api
+  pipeline :private do
+    plug :accepts, ["json"]
+  end
 
-    post "/users", UsersController, :create
-    get "/users/:referral_code/indications", UsersController, :indications
+  scope "/users", BankExWeb do
+    pipe_through :public
+
+    post "/", UsersController, :create
+  end
+
+  scope "/users", BankExWeb do
+    pipe_through :private
+
+    get "/:referral_code/indications", UsersController, :indications
   end
 
   scope "/docs" do
