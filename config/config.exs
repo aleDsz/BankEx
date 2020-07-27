@@ -37,6 +37,15 @@ config :bank_ex, :phoenix_swagger,
     ]
   }
 
+# Configures Guardian
+config :bank_ex, BankEx.Services.Authenticator,
+  issuer: "BANKEX",
+  secret_key: "Secret key. You can use `mix guardian.gen.secret` to get one"
+
+config :bank_ex, BankExWeb.Plugs.Authentications,
+  module: BankEx.Services.Authenticator,
+  error_handler: BankEx.Handlers.AuthError 
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
