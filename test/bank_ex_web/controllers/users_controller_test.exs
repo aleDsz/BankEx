@@ -4,7 +4,7 @@ defmodule BankExWeb.UsersControllerTest do
 
   alias BankEx.Services.Users
 
-  describe "Received request from API so" do
+  describe "Received new user request from API so" do
     test "with invalid CPF, shouldn't create a new user and produce status 422 with error message [POST /users]", %{conn: conn} do
       params =
         build(:user)
@@ -149,6 +149,85 @@ defmodule BankExWeb.UsersControllerTest do
         not is_nil(response)
         and status === "completed"
         and referred_user_id === user_id
+      )
+    end
+  end
+
+  describe "Received user indications request from API so" do
+    test "with invalid referral code, shouldn't retrieve all user's indications and produce status 404 with error message [GET /users/:referral_code/indications]", %{conn: conn} do
+      response =
+        conn
+        |> get(Routes.users_path(conn, :indications, "123456"))
+        |> json_response(404)
+
+      assert(
+        not is_nil(response)
+        and response["errors"]["detail"] === "Not Found" 
+      )
+    end
+
+    test "with valid referral code and pending status, shouldn't retrieve all user's indications and produce status 400 with error message [GET /users/:referral_code/indications]", %{conn: conn} do
+      params =
+        build(:user)
+        |> Map.delete(:city)
+
+      %{"referral_code" => user_referral_code} =
+        conn
+        |> post(Routes.users_path(conn, :create), params)
+        |> json_response(201)
+
+      params =
+        build(:user)
+        |> Map.put(:referral_code, user_referral_code)
+
+      response =
+        conn
+        |> post(Routes.users_path(conn, :create), params)
+        |> json_response(201)
+      
+      %{"referral_code" => referral_code} = response
+      {:ok, %{id: user_id}} = Users.get_by_referral_code(referral_code)
+
+      response =
+        conn
+        |> get(Routes.users_path(conn, :indications, user_referral_code))
+        |> json_response(400)
+
+      assert(
+        not is_nil(response)
+        and response["errors"]["detail"] === "User doesn't have the completed status"
+      )
+    end
+
+    test "with valid referral code, should retrieve all user's indications and produce status 200 without error [GET /users/:referral_code/indications]", %{conn: conn} do
+      %{"referral_code" => user_referral_code} =
+        conn
+        |> post(Routes.users_path(conn, :create), build(:user))
+        |> json_response(201)
+
+      params =
+        build(:user)
+        |> Map.put(:referral_code, user_referral_code)
+
+      response =
+        conn
+        |> post(Routes.users_path(conn, :create), params)
+        |> json_response(201)
+      
+      %{"referral_code" => referral_code} = response
+      {:ok, %{id: user_id}} = Users.get_by_referral_code(referral_code)
+
+      response =
+        conn
+        |> get(Routes.users_path(conn, :indications, user_referral_code))
+        |> json_response(200)
+
+      [%{"id" => response_user_id}] = response
+
+      assert(
+        not is_nil(response)
+        and length(response) === 1
+        and response_user_id === user_id
       )
     end
   end
