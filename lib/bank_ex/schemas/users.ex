@@ -165,7 +165,12 @@ defmodule BankEx.Schemas.User do
   defp generate_referral_code(%Ecto.Changeset{valid?: true} = changeset) do
     case get_field(changeset, :referral_code) do
       nil ->
-        referral_code = Ecto.UUID.generate() |> :erlang.phash2() |> to_string()
+        referral_code =
+          Ecto.UUID.generate()
+          |> :erlang.phash2()
+          |> to_string()
+          |> String.pad_leading(8, ["0"])
+          |> String.slice(0..7)
 
         changeset
         |> put_change(:referral_code, referral_code)
