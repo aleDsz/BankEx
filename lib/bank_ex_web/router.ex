@@ -42,8 +42,16 @@ defmodule BankExWeb.Router do
         title: "BankEx ;)",
         description: "The new bank account creation method"
       },
+      securityDefinitions: %{
+        Bearer: %{
+          type: "apiKey",
+          name: "Authorization",
+          in: "header"
+        }
+      },
       tags: [
-        %{name: "Users", description: "Manage all BankEx Users"}
+        %{name: "Users", description: "Manage all BankEx Users"},
+        %{name: "Auth", description: "Manage Users authentication"}
       ]
     }
   end
