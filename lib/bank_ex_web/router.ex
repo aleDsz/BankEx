@@ -10,5 +10,6 @@ defmodule BankExWeb.Router do
     pipe_through :api
 
     post "/users", UsersController, :create
+    get "/users/:referral_code/indications", UsersController, :indications
   end
 end
