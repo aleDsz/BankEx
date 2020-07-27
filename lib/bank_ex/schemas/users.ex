@@ -83,7 +83,7 @@ defmodule BankEx.Schemas.User do
     |> foreign_key_constraint(:referred_user_id, name: :users_referred_user_id_fkey)
     |> generate_referral_code()
     |> validate_length(:referral_code, is: 8)
-  end 
+  end
 
   defp validate_cpf(%Ecto.Changeset{} = changeset) do
     case get_change(changeset, :cpf) do
@@ -136,7 +136,7 @@ defmodule BankEx.Schemas.User do
     else
       status =
         fields
-        |> Enum.reduce_while("peding", fn field, _status ->
+        |> Enum.reduce_while("pending", fn field, _status ->
           cond do
             Map.has_key?(changes, field) and not is_nil(Map.get(changes, field)) ->
               {:cont, "completed"}
@@ -165,7 +165,7 @@ defmodule BankEx.Schemas.User do
 
     status =
       fields
-      |> Enum.reduce_while("peding", fn field, _status ->
+      |> Enum.reduce_while("pending", fn field, _status ->
         cond do
           Map.has_key?(changes, field) and not is_nil(Map.get(changes, field)) ->
             {:cont, "completed"}
