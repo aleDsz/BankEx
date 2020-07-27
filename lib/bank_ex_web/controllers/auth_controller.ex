@@ -3,7 +3,7 @@ defmodule BankExWeb.AuthController do
   The auth controller context
   """
   use BankExWeb, :controller
-  # use BankExWeb.Swagger.AuthController 
+  use BankExWeb.Swagger.AuthController
 
   action_fallback BankExWeb.FallbackController
 
