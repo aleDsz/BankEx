@@ -28,7 +28,7 @@ defmodule BankExWeb.Plugs.Crypto do
     conn
     |> Map.put(:params, params)
   end
-  defp do_crypto(%Plug.Conn{} = conn), do: conn
 
-  defp encrypt(value), do: value |> BankEx.Services.Crypto.encrypt() 
+  defp encrypt(value),
+    do: value |> BankEx.Services.Crypto.encrypt()
 end
