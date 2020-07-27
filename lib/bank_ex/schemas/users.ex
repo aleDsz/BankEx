@@ -99,21 +99,26 @@ defmodule BankEx.Schemas.User do
 
   defp define_status(%Ecto.Changeset{valid?: false} = changeset),
     do: changeset
-  defp define_status(%Ecto.Changeset{valid?: true, changes: changes} = changeset) do
+  defp define_status(%Ecto.Changeset{valid?: true, data: %__MODULE__{id: nil}, changes: changes} = changeset) do
     fields =
       @fields
       |> List.delete(:id)
       |> List.delete(:status)
 
-    if length(fields) != length(Map.keys(changes)) do
+    map_keys =
+      changes
+      |> Map.take(fields)
+      |> Map.keys()
+
+    if length(fields) != length(map_keys) do
       changeset
       |> put_change(:status, "pending")
     else
       status =
-        changes
-        |> Enum.reduce_while("peding", fn {key, value}, _status ->
+        fields
+        |> Enum.reduce_while("peding", fn field, _status ->
           cond do
-            Enum.member?(fields, key) and not is_nil(value) ->
+            Map.has_key?(changes, field) and not is_nil(Map.get(changes, field)) ->
               {:cont, "completed"}
 
             true ->
@@ -124,6 +129,34 @@ defmodule BankEx.Schemas.User do
       changeset
       |> put_change(:status, status)
     end
+  end
+  defp define_status(%Ecto.Changeset{valid?: true, data: data, changes: changes} = changeset) do
+    fields =
+      data
+      |> Map.from_struct()
+      |> Enum.reduce([], fn
+        {key, nil}, fields ->
+          fields ++ [key]
+
+        _, fields ->
+          fields
+      end)
+      |> Enum.filter(&Enum.member?(@fields, &1))
+
+    status =
+      fields
+      |> Enum.reduce_while("peding", fn field, _status ->
+        cond do
+          Map.has_key?(changes, field) and not is_nil(Map.get(changes, field)) ->
+            {:cont, "completed"}
+
+          true ->
+            {:halt, "pending"}
+        end
+      end)
+
+    changeset
+    |> put_change(:status, status)
   end
 
   defp generate_referral_code(%Ecto.Changeset{valid?: false} = changeset),
