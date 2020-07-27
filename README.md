@@ -18,7 +18,7 @@ $ curl \
   X POST "http://localhost:4000/users" \
   -H "accept: application/json" \
   -H "content-type: application/json" \
-  -d "{ \"birth_date\": \"1996-05-07\", \"city\": \"São Paulo\", \"country\": \"Brazil\", \"cpf\": \"08716310080\", \"email\": \"alexandre@teste.com\", \"gender\": \"M\", \"name\": \"Alexandre de Souza\", \"state\": \"São Paulo\"}"
+  -d "{ \"birth_date\": \"1996-05-07\", \"city\": \"São Paulo\", \"country\": \"Brazil\", \"cpf\": \"08716310080\", \"email\": \"alexandre@teste.com\", \"password\": \"123456\", \"gender\": \"M\", \"name\": \"Alexandre de Souza\", \"state\": \"São Paulo\"}"
 ```
 
 And it will generate the response:
@@ -37,7 +37,7 @@ $ curl \
   X POST "http://localhost:4000/users" \
   -H "accept: application/json" \
   -H "content-type: application/json" \
-  -d "{ \"birth_date\": \"1996-05-07\", \"city\": \"São Paulo\", \"country\": \"Brazil\", \"cpf\": \"08716310080\", \"email\": \"alexandre2@teste.com\", \"gender\": \"M\", \"name\": \"Alexandre de Souza\", \"state\": \"São Paulo\", \"referral_code\": \"44090390\"}"
+  -d "{ \"birth_date\": \"1996-05-07\", \"city\": \"São Paulo\", \"country\": \"Brazil\", \"cpf\": \"08716310080\", \"email\": \"alexandre2@teste.com\", \"password\": \"123456\", \"gender\": \"M\", \"name\": \"Alexandre de Souza\", \"state\": \"São Paulo\", \"referral_code\": \"44090390\"}"
 ```
 
 ## Documentation
