@@ -12,6 +12,7 @@ defmodule BankEx.Schemas.User do
     id: Ecto.UUID.type(),
     name: binary(),
     email: binary(),
+    password: binary(),
     cpf: binary(),
     birth_date: binary(),
     gender: binary(),
@@ -49,6 +50,7 @@ defmodule BankEx.Schemas.User do
   schema "users" do
     field :name, :string
     field :email, :string
+    field :password, :string
     field :cpf, :string
     field :birth_date, :string
     field :gender, :string
@@ -69,7 +71,7 @@ defmodule BankEx.Schemas.User do
   @spec changeset(__MODULE__.t(), map()) :: Ecto.Changeset.t()
   def changeset(%__MODULE__{} = schema, attrs \\ %{}) when is_map(attrs) do
     schema
-    |> cast(attrs, [:name, :email, :cpf, :birth_date, :gender, :city, :state, :country, :status, :referred_user_id])
+    |> cast(attrs, [:name, :email, :password, :cpf, :birth_date, :gender, :city, :state, :country, :status, :referred_user_id])
     |> validate_required([:cpf])
     |> validate_inclusion(:gender, @genders)
     |> validate_cpf()

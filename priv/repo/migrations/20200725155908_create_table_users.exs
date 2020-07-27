@@ -6,6 +6,7 @@ defmodule BankEx.Repo.Migrations.CreateTableUsers do
       add :id, :binary_id, primary_key: true
       add :name, :string
       add :email, :string
+      add :password, :string
       add :cpf, :string
       add :birth_date, :string
       add :gender, :string
