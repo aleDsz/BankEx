@@ -10,7 +10,7 @@ defmodule BankEx.Contexts.Users do
   @preload [:referred_user]
 
   @doc """
-
+  Retrieve an user by ID
   """
   @spec get(user_id :: Ecto.UUID.t()) :: {:ok, User.t()} | {:error, term()}
   def get(user_id) do
