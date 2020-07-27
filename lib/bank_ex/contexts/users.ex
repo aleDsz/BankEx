@@ -30,6 +30,25 @@ defmodule BankEx.Contexts.Users do
   end
 
   @doc """
+  Retrieve an user by referral code
+  """
+  @spec get_by_referral_code(referral_code :: binary()) :: {:ok, User.t()} | {:error, term()}
+  def get_by_referral_code(referral_code) do
+    from(
+      m in User,
+      where: m.referral_code == ^referral_code,
+      preload: ^@preload
+    )
+    |> Repo.one()
+    |> case do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        {:ok, user}
+    end
+  end
+  @doc """
   Create new user
   """
   @spec create(map()) :: {:ok, User.t()} | {:error, term()}
