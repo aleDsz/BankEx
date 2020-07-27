@@ -51,7 +51,7 @@ defmodule BankExWeb.Swagger.UsersController do
         operation_id "create_user"
         summary "Create new user"
         description "Create new User"
-        tag "User"
+        tag "Users"
 
         produces "application/json"
         consumes "application/json"
@@ -69,7 +69,7 @@ defmodule BankExWeb.Swagger.UsersController do
         operation_id "list_user_indications"
         summary "List all user's indications"
         description "List all user's indications"
-        tag "UserIndication"
+        tag "Users"
 
         produces "application/json"
         consumes "application/json"
