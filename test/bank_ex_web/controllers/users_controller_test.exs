@@ -180,14 +180,10 @@ defmodule BankExWeb.UsersControllerTest do
         build(:user)
         |> Map.put(:referral_code, user_referral_code)
 
-      response =
-        conn
-        |> post(Routes.users_path(conn, :create), params)
-        |> json_response(201)
+     conn
+     |> post(Routes.users_path(conn, :create), params)
+     |> json_response(201)
       
-      %{"referral_code" => referral_code} = response
-      {:ok, %{id: user_id}} = Users.get_by_referral_code(referral_code)
-
       response =
         conn
         |> get(Routes.users_path(conn, :indications, user_referral_code))
