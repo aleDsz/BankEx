@@ -3,6 +3,7 @@ defmodule BankExWeb.UsersController do
   The user controller context
   """
   use BankExWeb, :controller
+  use BankExWeb.Swagger.UsersController 
 
   action_fallback BankExWeb.FallbackController
 
