@@ -79,6 +79,7 @@ defmodule BankEx.Schemas.User do
     |> unique_constraint(:referral_code, name: :users_unique_referral_code)
     |> foreign_key_constraint(:referred_user_id, name: :users_referred_user_id_fkey)
     |> generate_referral_code()
+    |> validate_length(:referral_code, is: 8)
   end 
 
   defp validate_cpf(%Ecto.Changeset{} = changeset) do
